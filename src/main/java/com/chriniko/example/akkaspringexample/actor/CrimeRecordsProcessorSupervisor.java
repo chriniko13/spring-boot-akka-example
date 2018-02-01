@@ -32,6 +32,8 @@ import java.util.concurrent.TimeUnit;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class CrimeRecordsProcessorSupervisor extends AbstractLoggingActor {
 
+    private static final String CRIME_RECORDS_FILE = "files/SacramentocrimeJanuary2006.csv";
+
     @Autowired
     private SpringAkkaExtension springAkkaExtension;
 
@@ -120,7 +122,7 @@ public class CrimeRecordsProcessorSupervisor extends AbstractLoggingActor {
 
                     final long filesLinesCount
                             = fileLinesCounter.count(
-                                    fileLinesCounter.getFile("files/SacramentocrimeJanuary2006.csv"),
+                                    fileLinesCounter.getFile(CRIME_RECORDS_FILE),
                             true);
 
                     if (totalProcessedRecords != filesLinesCount) {

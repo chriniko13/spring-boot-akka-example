@@ -29,6 +29,8 @@ import java.util.function.Function;
 @Component
 public class CrimeRecordsFetcher {
 
+    private static final String CRIME_RECORDS_FILE = "files/SacramentocrimeJanuary2006.csv";
+
     @Autowired
     private SpringAkkaExtension springAkkaExtension;
 
@@ -135,7 +137,7 @@ public class CrimeRecordsFetcher {
     }
 
     private URI getUri() {
-        URL resource = this.getClass().getClassLoader().getResource("files/SacramentocrimeJanuary2006.csv");
+        URL resource = this.getClass().getClassLoader().getResource(CRIME_RECORDS_FILE);
 
         return Optional
                 .ofNullable(resource)
