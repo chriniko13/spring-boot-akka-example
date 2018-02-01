@@ -48,12 +48,29 @@
 			<scope>runtime</scope>
 		</dependency>
 
+		<!-- Hikari CP -->
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>2.6.1</version>
+			<scope>compile</scope>
+		</dependency>
+
 		<!-- Akka Actor -->
 		<dependency>
 			<groupId>com.typesafe.akka</groupId>
 			<artifactId>akka-actor_2.12</artifactId>
 			<version>2.5.9</version>
 		</dependency>
+
+		<!-- Lombok -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.16.16</version>
+			<scope>provided</scope>
+		</dependency>
+
 
 		<!-- END: DEV DEPENDENCIES-->
 

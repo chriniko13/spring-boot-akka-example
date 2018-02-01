@@ -17,21 +17,20 @@ public class AkkaSpringExampleApplication {
 
     public static void main(String[] args) {
 
+        // initialization action
         System.out.println("### Setting up Actor System ###");
-
         ConfigurableApplicationContext context = SpringApplication.run(AkkaSpringExampleApplication.class, args);
-
         ActorSystem actorSystem = context.getBean(ActorSystem.class);
-
         SpringAkkaExtension springAkkaExtension = context.getBean(SpringAkkaExtension.class);
-
         System.out.println("### Actor System is ready for work ###\n\n");
 
+
+        //examples sections
         runFirstExample(actorSystem, springAkkaExtension);
 
+
+        // shutting down section
         System.out.println("### Shutting down Actor System ###");
-
-
         try {
             TimeUnit.SECONDS.sleep(5);
             actorSystem.terminate();
