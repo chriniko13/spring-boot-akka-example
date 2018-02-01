@@ -112,8 +112,8 @@ public class CrimeRecordsFetcher {
             }
 
         } catch (IOException e) {
-            //TODO add proper retry and exception handling...
             e.printStackTrace(System.err);
+            throw new RuntimeException(e);
         }
     }
 

@@ -21,7 +21,7 @@ public class AkkaSpringExampleApplication {
 
     public static void main(String[] args) {
 
-        // initialization action
+        // --- initialization action ---
         System.out.println("### Setting up Actor System ###");
         ConfigurableApplicationContext context = SpringApplication.run(AkkaSpringExampleApplication.class, args);
         ActorSystem actorSystem = context.getBean(ActorSystem.class);
@@ -29,14 +29,11 @@ public class AkkaSpringExampleApplication {
         System.out.println("### Actor System is ready for work ###\n\n");
 
 
-        //examples sections
-        //runFirstExample(actorSystem, springAkkaExtension);
+        // --- examples sections ---
+        //runFirstExample(actorSystem, springAkkaExtension); // Note: comment-uncomment.
+        runSecondExample(context); // Note: comment/uncomment.
 
-        //TODO add second example here...
-        CrimeRecordsFetcher crimeRecordsFetcher = context.getBean(CrimeRecordsFetcher.class);
-        crimeRecordsFetcher.process();
-
-        // shutting down section
+        // --- shutting down section ---
         System.out.println("### Shutting down Actor System ###");
         try {
             TimeUnit.SECONDS.sleep(30);
@@ -47,9 +44,6 @@ public class AkkaSpringExampleApplication {
 
     }
 
-    /*
-        Note: use it depending on your needs.
-     */
     private static void runFirstExample(ActorSystem actorSystem, SpringAkkaExtension springAkkaExtension) {
 
         ActorRef greetingActorRef
@@ -61,5 +55,8 @@ public class AkkaSpringExampleApplication {
         greetingActorRef.tell(new Greet("chriniko", greetingResultLoggerActorRef), ActorRef.noSender());
     }
 
-
+    private static void runSecondExample(ConfigurableApplicationContext context) {
+        CrimeRecordsFetcher crimeRecordsFetcher = context.getBean(CrimeRecordsFetcher.class);
+        crimeRecordsFetcher.process();
+    }
 }
