@@ -17,4 +17,11 @@ public class SpringAkkaExtension implements Extension {
     public Props props(String actorBeanName) {
         return Props.create(SpringActorProducer.class, applicationContext, actorBeanName);
     }
+
+    public static String classNameToSpringName(Class<?> clazz) {
+
+        String simpleName = clazz.getSimpleName();
+
+        return simpleName.substring(0, 1).toLowerCase() + simpleName.substring(1);
+    }
 }

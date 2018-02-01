@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class CrimeRecordProcessor extends AbstractLoggingActor {
 
+    //TODO add implementation...
+
     @Override
     public Receive createReceive() {
         return null;

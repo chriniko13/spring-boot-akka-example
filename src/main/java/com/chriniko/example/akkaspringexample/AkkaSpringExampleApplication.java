@@ -46,18 +46,13 @@ public class AkkaSpringExampleApplication {
     private static void runFirstExample(ActorSystem actorSystem, SpringAkkaExtension springAkkaExtension) {
 
         ActorRef greetingActorRef
-                = actorSystem.actorOf(springAkkaExtension.props(classNameToSpringName(GreetingActor.class)));
+                = actorSystem.actorOf(springAkkaExtension.props(SpringAkkaExtension.classNameToSpringName(GreetingActor.class)));
 
         ActorRef greetingResultLoggerActorRef
-                = actorSystem.actorOf(springAkkaExtension.props(classNameToSpringName(GreetingResultLoggerActor.class)));
+                = actorSystem.actorOf(springAkkaExtension.props(SpringAkkaExtension.classNameToSpringName(GreetingResultLoggerActor.class)));
 
         greetingActorRef.tell(new Greet("chriniko", greetingResultLoggerActorRef), ActorRef.noSender());
     }
 
-    private static String classNameToSpringName(Class<?> clazz) {
 
-        String simpleName = clazz.getSimpleName();
-
-        return simpleName.substring(0, 1).toLowerCase() + simpleName.substring(1);
-    }
 }

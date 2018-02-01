@@ -1,6 +1,12 @@
 package com.chriniko.example.akkaspringexample.poller;
 
+import akka.actor.ActorRef;
+import akka.actor.ActorSystem;
+import com.chriniko.example.akkaspringexample.actor.GreetingActor;
 import com.chriniko.example.akkaspringexample.domain.CrimeRecord;
+import com.chriniko.example.akkaspringexample.integration.akka.SpringAkkaExtension;
+import com.chriniko.example.akkaspringexample.message.CrimeRecordsToProcessBatch;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -21,10 +27,25 @@ import java.util.Optional;
 @Component
 public class CrimeRecordsFetcher {
 
+    @Autowired
+    private SpringAkkaExtension springAkkaExtension;
+
+    @Autowired
+    private ActorSystem actorSystem;
+
     private BufferedReader bufferedReader;
+
+    private ActorRef crimeRecordProcessorSupervisor;
 
     @PostConstruct
     void init() {
+
+        //initialize actor
+        crimeRecordProcessorSupervisor =
+                actorSystem.actorOf(springAkkaExtension.props(
+                        SpringAkkaExtension.classNameToSpringName(GreetingActor.class)));
+
+        //initialize file
         try {
             Path path = Paths.get(getUri());
 
@@ -86,7 +107,8 @@ public class CrimeRecordsFetcher {
 
 
                 if (++recordsCounter == batchSize) {
-                    //TODO send message to supervisor...
+                    // send message to supervisor
+                    crimeRecordProcessorSupervisor.tell(new CrimeRecordsToProcessBatch(crimeRecords), ActorRef.noSender());
 
                     // do the necessary re-initializations
                     recordsCounter = 0;
