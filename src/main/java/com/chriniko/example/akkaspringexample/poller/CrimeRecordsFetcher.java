@@ -2,11 +2,12 @@ package com.chriniko.example.akkaspringexample.poller;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
-import com.chriniko.example.akkaspringexample.actor.GreetingActor;
+import com.chriniko.example.akkaspringexample.actor.CrimeRecordsProcessorSupervisor;
 import com.chriniko.example.akkaspringexample.domain.CrimeRecord;
 import com.chriniko.example.akkaspringexample.integration.akka.SpringAkkaExtension;
 import com.chriniko.example.akkaspringexample.message.CrimeRecordsToProcessBatch;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -23,6 +24,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 @Component
 public class CrimeRecordsFetcher {
@@ -33,17 +35,19 @@ public class CrimeRecordsFetcher {
     @Autowired
     private ActorSystem actorSystem;
 
+    @Value("${crime.records.fetcher.batch.size}")
+    private int crimeRecordsBatchSize;
+
     private BufferedReader bufferedReader;
 
     private ActorRef crimeRecordProcessorSupervisor;
 
     @PostConstruct
     void init() {
-
-        //initialize actor
+        //initialize supervisor actor
         crimeRecordProcessorSupervisor =
                 actorSystem.actorOf(springAkkaExtension.props(
-                        SpringAkkaExtension.classNameToSpringName(GreetingActor.class)));
+                        SpringAkkaExtension.classNameToSpringName(CrimeRecordsProcessorSupervisor.class)));
 
         //initialize file
         try {
@@ -76,10 +80,8 @@ public class CrimeRecordsFetcher {
     }
 
     public void process() {
-
         System.out.println("CrimeRecordsPoller#process --- executing [time = " + Instant.now() + "]");
 
-        int batchSize = 200;
         String readedLine;
         int recordsCounter = 0;
         List<CrimeRecord> crimeRecords = new ArrayList<>();
@@ -88,25 +90,11 @@ public class CrimeRecordsFetcher {
 
             while ((readedLine = bufferedReader.readLine()) != null) {
 
-                String[] splittedData = readedLine.split(",");
-
-                CrimeRecord crimeRecord = CrimeRecord
-                        .builder()
-                        .cDateTime(splittedData[0])
-                        .address(splittedData[1])
-                        .district(splittedData[2])
-                        .beat(splittedData[3])
-                        .grid(splittedData[4])
-                        .crimeDescr(splittedData[5])
-                        .ucrNcicCode(splittedData[6])
-                        .latitude(splittedData[7])
-                        .longtitude(splittedData[8])
-                        .build();
+                CrimeRecord crimeRecord = getCrimeRecord(readedLine);
 
                 crimeRecords.add(crimeRecord);
 
-
-                if (++recordsCounter == batchSize) {
+                if (++recordsCounter == crimeRecordsBatchSize) {
                     // send message to supervisor
                     crimeRecordProcessorSupervisor.tell(new CrimeRecordsToProcessBatch(crimeRecords), ActorRef.noSender());
 
@@ -117,10 +105,33 @@ public class CrimeRecordsFetcher {
 
             }
 
+            //TODO optimize batch remainings.....
+            if (!crimeRecords.isEmpty()) {
+                // send message to supervisor
+                crimeRecordProcessorSupervisor.tell(new CrimeRecordsToProcessBatch(crimeRecords), ActorRef.noSender());
+            }
+
         } catch (IOException e) {
             //TODO add proper retry and exception handling...
             e.printStackTrace(System.err);
         }
+    }
+
+    private CrimeRecord getCrimeRecord(String readedLine) {
+        final String[] splittedData = readedLine.split(",");
+
+        return CrimeRecord
+                .builder()
+                .cDateTime(splittedData[0])
+                .address(splittedData[1])
+                .district(splittedData[2])
+                .beat(splittedData[3])
+                .grid(splittedData[4])
+                .crimeDescr(splittedData[5])
+                .ucrNcicCode(splittedData[6])
+                .latitude(splittedData[7])
+                .longtitude(splittedData[8])
+                .build();
     }
 
     private URI getUri() {
@@ -128,15 +139,19 @@ public class CrimeRecordsFetcher {
 
         return Optional
                 .ofNullable(resource)
-                .map(r -> {
-                    try {
-                        return r.toURI();
-                    } catch (URISyntaxException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
+                .map(toUri())
                 .orElseThrow(IllegalStateException::new);
 
+    }
+
+    private Function<URL, URI> toUri() {
+        return r -> {
+            try {
+                return r.toURI();
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
+            }
+        };
     }
 
 }

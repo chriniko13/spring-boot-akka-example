@@ -6,11 +6,15 @@ import com.chriniko.example.akkaspringexample.actor.GreetingActor;
 import com.chriniko.example.akkaspringexample.actor.GreetingResultLoggerActor;
 import com.chriniko.example.akkaspringexample.integration.akka.SpringAkkaExtension;
 import com.chriniko.example.akkaspringexample.message.Greet;
+import com.chriniko.example.akkaspringexample.poller.CrimeRecordsFetcher;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import scala.concurrent.Await;
+import scala.concurrent.duration.Duration;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 @SpringBootApplication
 public class AkkaSpringExampleApplication {
@@ -26,15 +30,18 @@ public class AkkaSpringExampleApplication {
 
 
         //examples sections
-        runFirstExample(actorSystem, springAkkaExtension);
+        //runFirstExample(actorSystem, springAkkaExtension);
 
+        //TODO add second example here...
+        CrimeRecordsFetcher crimeRecordsFetcher = context.getBean(CrimeRecordsFetcher.class);
+        crimeRecordsFetcher.process();
 
         // shutting down section
         System.out.println("### Shutting down Actor System ###");
         try {
-            TimeUnit.SECONDS.sleep(5);
-            actorSystem.terminate();
-        } catch (InterruptedException e) {
+            TimeUnit.SECONDS.sleep(30);
+            Await.ready(actorSystem.terminate(), Duration.create(30, TimeUnit.SECONDS));
+        } catch (InterruptedException | TimeoutException e) {
             e.printStackTrace(System.err);
         }
 
