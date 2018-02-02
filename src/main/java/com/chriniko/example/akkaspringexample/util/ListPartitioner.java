@@ -55,21 +55,34 @@ public class ListPartitioner {
     }
 
 
-    //TODO remove this and introduce a correct unit test.
+
+    //TODO add test cases...
+    //Note: it is always advisable to have unit tests and not do things like the following.
     public static void main(String[] args) {
 
+        List<Integer> resultToPartition;
+        List<List<Integer>> partitionedResult;
+
+
         //494 with 5, equal -> true
+        resultToPartition = IntStream.rangeClosed(1, 494).boxed().collect(Collectors.toList());
+        partitionedResult = new ListPartitioner().partition(resultToPartition, 5, true);
+
+
         //494 with 5, equal -> false
+        resultToPartition = IntStream.rangeClosed(1, 494).boxed().collect(Collectors.toList());
+        partitionedResult = new ListPartitioner().partition(resultToPartition, 5, false);
+
+
         //500 with 5, equal -> false
+        resultToPartition = IntStream.rangeClosed(1, 500).boxed().collect(Collectors.toList());
+        partitionedResult = new ListPartitioner().partition(resultToPartition, 5, false);
+
+
         //500 with 5, equal -> true
+        resultToPartition = IntStream.rangeClosed(1, 500).boxed().collect(Collectors.toList());
+        partitionedResult = new ListPartitioner().partition(resultToPartition, 5, true);
 
-
-        List<Integer> result = IntStream.rangeClosed(1, 494).boxed().collect(Collectors.toList());
-
-        List<List<Integer>> partitionedResult = new ListPartitioner().partition(result, 5, true);
-
-        System.out.println("partitioned result size: " + partitionedResult.size());
-        partitionedResult.forEach(r -> System.out.println("result size: " + r.size()));
 
     }
 
