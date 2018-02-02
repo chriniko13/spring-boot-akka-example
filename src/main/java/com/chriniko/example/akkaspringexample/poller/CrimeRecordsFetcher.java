@@ -107,8 +107,7 @@ public class CrimeRecordsFetcher {
 
             }
 
-            //TODO optimize batch remainings.....
-            if (!crimeRecords.isEmpty()) {
+            if (!crimeRecords.isEmpty()) { // Note: handle the remained records.
                 // send message to supervisor
                 crimeRecordProcessorSupervisor.tell(new CrimeRecordsToProcessBatch(crimeRecords), ActorRef.noSender());
             }

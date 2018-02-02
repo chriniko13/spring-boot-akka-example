@@ -71,7 +71,7 @@ public class CrimeRecordsProcessorSupervisor extends AbstractLoggingActor {
         );
 
         // --- initialize router ---
-        List<Routee> routees = new ArrayList<>(childrenToCreate);
+        final List<Routee> routees = new ArrayList<>(childrenToCreate);
 
         for (int i = 0; i < childrenToCreate; i++) {
 
