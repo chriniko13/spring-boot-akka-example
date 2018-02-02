@@ -74,9 +74,11 @@ public class CrimeRecordsProcessorSupervisor extends AbstractLoggingActor {
         List<Routee> routees = new ArrayList<>(childrenToCreate);
 
         for (int i = 0; i < childrenToCreate; i++) {
-            //TODO add another dispatcher because we will have heavy I/O (db access)...
+
             ActorRef crimeRecordsProcessorChild =
-                    actorSystem.actorOf(springAkkaExtension.props(SpringAkkaExtension.classNameToSpringName(CrimeRecordsProcessor.class)));
+                    actorSystem.actorOf(springAkkaExtension
+                            .props(SpringAkkaExtension.classNameToSpringName(CrimeRecordsProcessor.class))
+                            .withDispatcher("akka.blocking-io-dispatcher"));
 
             getContext().watch(crimeRecordsProcessorChild);
             routees.add(new ActorRefRoutee(crimeRecordsProcessorChild));
@@ -122,7 +124,7 @@ public class CrimeRecordsProcessorSupervisor extends AbstractLoggingActor {
 
                     final long filesLinesCount
                             = fileLinesCounter.count(
-                                    fileLinesCounter.getFile(CRIME_RECORDS_FILE),
+                            fileLinesCounter.getFile(CRIME_RECORDS_FILE),
                             true);
 
                     if (totalProcessedRecords != filesLinesCount) {
@@ -139,7 +141,9 @@ public class CrimeRecordsProcessorSupervisor extends AbstractLoggingActor {
                     router = router.removeRoutee(terminatedActor);
 
                     ActorRef crimeRecordsProcessorChild =
-                            actorSystem.actorOf(springAkkaExtension.props(SpringAkkaExtension.classNameToSpringName(CrimeRecordsProcessor.class)));
+                            actorSystem.actorOf(springAkkaExtension
+                                    .props(SpringAkkaExtension.classNameToSpringName(CrimeRecordsProcessor.class))
+                                    .withDispatcher("akka.blocking-io-dispatcher"));
 
                     getContext().watch(crimeRecordsProcessorChild);
 
