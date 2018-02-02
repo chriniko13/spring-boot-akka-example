@@ -63,7 +63,7 @@ public class CrimeRecordsProcessorSupervisor extends AbstractLoggingActor {
 
         // --- initialize scheduler events ---
         getContext().system().scheduler().scheduleOnce(
-                Duration.apply(10, TimeUnit.SECONDS) /* Note: this is actually the timeout */,
+                Duration.apply(20, TimeUnit.SECONDS) /* Note: this is actually the timeout */,
                 getSelf(),
                 new CheckAllAcks(),
                 getContext().system().dispatcher(),
