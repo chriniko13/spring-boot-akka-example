@@ -37,7 +37,9 @@ public class ListPartitioner {
             }
 
             if (!equalDistribution) { // Note: add all the remained elements to the last partition.
+
                 result.get(partitionSize - 1).addAll(subList);
+
             } else { //Note: otherwise distribute them equally.
 
                 for (int k = 0, idx = 1; k < subList.size(); k++) {
