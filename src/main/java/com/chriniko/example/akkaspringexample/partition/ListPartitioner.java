@@ -1,4 +1,4 @@
-package com.chriniko.example.akkaspringexample.util;
+package com.chriniko.example.akkaspringexample.partition;
 
 import org.springframework.stereotype.Component;
 

@@ -1,4 +1,4 @@
-package com.chriniko.example.akkaspringexample.util;
+package com.chriniko.example.akkaspringexample.file;
 
 import org.springframework.stereotype.Component;
 
