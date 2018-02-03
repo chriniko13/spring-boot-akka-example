@@ -99,7 +99,8 @@ public class CrimeRecordsProcessorSupervisor extends AbstractLoggingActor {
 
                     final List<CrimeRecord> crimeRecords = msg.getCrimeRecords();
 
-                    final List<List<CrimeRecord>> splittedCrimeRecordsForChildren = listPartitioner.partition(crimeRecords, childrenToCreate, false);
+                    final List<List<CrimeRecord>> splittedCrimeRecordsForChildren
+                            = listPartitioner.partition(crimeRecords, childrenToCreate, true);
 
                     for (List<CrimeRecord> splittedCrimeRecordsForChild : splittedCrimeRecordsForChildren) {
 

@@ -31,7 +31,7 @@ public class AkkaSpringExampleApplication {
 
         // --- examples sections ---
         //runFirstExample(actorSystem, springAkkaExtension); // Note: comment-uncomment.
-        runSecondExample(context); // Note: comment/uncomment.
+        runSecondExample(context); // Note: comment-uncomment.
 
         // --- shutting down section ---
         System.out.println("### Shutting down Actor System ###");

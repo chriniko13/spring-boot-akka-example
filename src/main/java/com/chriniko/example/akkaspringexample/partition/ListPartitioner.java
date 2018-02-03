@@ -4,8 +4,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Component
 public class ListPartitioner {
@@ -54,36 +52,5 @@ public class ListPartitioner {
         return result;
     }
 
-
-
-    //TODO add test cases with Spock Framework and Groovy Language...
-    //Note: it is always advisable to have unit tests and not do things like the following.
-    public static void main(String[] args) {
-
-        List<Integer> resultToPartition;
-        List<List<Integer>> partitionedResult;
-
-
-        //494 with 5, equal -> true
-        resultToPartition = IntStream.rangeClosed(1, 494).boxed().collect(Collectors.toList());
-        partitionedResult = new ListPartitioner().partition(resultToPartition, 5, true);
-
-
-        //494 with 5, equal -> false
-        resultToPartition = IntStream.rangeClosed(1, 494).boxed().collect(Collectors.toList());
-        partitionedResult = new ListPartitioner().partition(resultToPartition, 5, false);
-
-
-        //500 with 5, equal -> false
-        resultToPartition = IntStream.rangeClosed(1, 500).boxed().collect(Collectors.toList());
-        partitionedResult = new ListPartitioner().partition(resultToPartition, 5, false);
-
-
-        //500 with 5, equal -> true
-        resultToPartition = IntStream.rangeClosed(1, 500).boxed().collect(Collectors.toList());
-        partitionedResult = new ListPartitioner().partition(resultToPartition, 5, true);
-
-
-    }
 
 }
